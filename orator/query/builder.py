@@ -978,6 +978,26 @@ class QueryBuilder(object):
 
         return
 
+    def getd(self, columns=None):
+        """
+        Execute the query as a "select" statement
+
+        :param columns: The columns to get
+        :type columns: list
+
+        :return: The result
+        :rtype: list of dict
+        """
+        resp = self.get(columns)
+        cols = [i[0] for i in self._connection._cursor.description]
+        nresp = []
+        for item in resp:
+            rec = dict()
+            for idx, col in enumerate(cols):
+                rec[col] = item[idx]
+            nresp.append(rec)
+        return nresp
+
     def get(self, columns=None):
         """
         Execute the query as a "select" statement
@@ -1580,5 +1600,3 @@ class QueryBuilder(object):
             return self.dynamic_where(item)
 
         object.__getattribute__(self, item)
-
-
